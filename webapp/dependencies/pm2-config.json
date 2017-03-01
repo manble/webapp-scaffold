@@ -1,0 +1,9 @@
+[{
+  "name": "webapp",
+  "script": "app.js",
+  "log_date_format": "YYYY-MM-DD HH:mm Z",
+  "exec_mode": "cluster",
+  "instances": 4,
+  "error_file": "logs/webapp-error.log",
+  "out_file": "logs/webapp-out.log"
+}]
