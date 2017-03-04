@@ -21,7 +21,7 @@ module.exports = function(opts, env) {
             }
         }
     };
-    options = utils.extend(options, env);
+    options = utils.extend(options, opts);
     return through.obj(function(file, enc, cb) {
         if (file.isNull()) {
             return cb(null, file);
