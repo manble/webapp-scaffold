@@ -1,7 +1,7 @@
 /**
-* @description：
-* @author: manble@live.com
-*/
+ * @description：
+ * @author: manble@live.com
+ */
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var spritesmith = require('gulp.spritesmith');
@@ -15,8 +15,12 @@ var gls = require('gulp-live-server');
 var webpack = require("webpack");
 
 var devConf = require('./dependencies/conf.js');
-var isDev = false;
-var isRelease = false;
+var spriteConfig = require('./dependencies/sprite.js');
+var webpackConfig = require('./dependencies/webpack.js');
+var cssMinify = require('./dependencies/cssMinify.js');
+var toHtml = require('./dependencies/html.js');
+var ftp = require('./dependencies/ftp.js');
+
 var env = 'development';
 var runServer = function() {
     var server = gls('app.js', {
@@ -40,7 +44,7 @@ gulp.task('copy:img', function(cb) {
 gulp.task('sprite', function(cb) {
     var conf = devConf.sprite,
         spriteData = null;
-    var config = require('./dependencies/sprite.js')(conf);
+    var config = spriteConfig(conf);
 
     Object.keys(config).forEach(function(key) {
         var item = config[key];
@@ -56,18 +60,19 @@ gulp.task('scss2css', function(cb) {
         .pipe(newer(conf.dist))
         .pipe(sass({
                 includePaths: conf.includePaths,
-                outputStyle: isDev ? 'expanded' : 'compressed',
-                sourceComments: isDev ? true : false
+                outputStyle: 'expanded',
+                sourceComments: true
             })
             .on('error', sass.logError))
         .pipe(autoprefixer({
             browsers: ['chrome >= 34', 'ios >= 7', 'android >= 2.0']
         }))
+        .pipe(cssMinify({}, env))
         .pipe(gulp.dest(conf.dist));
 });
 
 gulp.task('webpack', function(cb) {
-    webpack(require('./dependencies/webpack.js')(devConf.webpackjs, env), function(err, stats) {
+    webpack(webpackConfig(devConf.webpackjs, env), function(err, stats) {
         cb();
     });
 });
@@ -109,21 +114,19 @@ gulp.task('replace:css-js-hash', function(cb) {
         .pipe(gulp.dest(conf.dist));
 });
 
-gulp.task('ftp', function() {
-    require('./dependencies/ftp.js')(function() {
-        isRelease && runServer();
+gulp.task('ftp', function(cb) {
+    ftp(function() {
+        cb();
     });
 });
 
-gulp.task('html', function() {
-    require('./dependencies/html.js')(function() {});
+gulp.task('html', function(cb) {
+    toHtml(function() {});
 });
 
 //
 gulp.task('dev', function() {
     var conf = devConf.watch;
-    isDev = true;
-    isRelease = false;
     env = 'development';
     runSequence(['del'], ['copy:img'], ['sprite'], ['scss2css'], ['webpack'], function() {
         var server = runServer();
@@ -140,8 +143,6 @@ gulp.task('dev', function() {
 });
 
 gulp.task('preview', function() {
-    isDev = false;
-    isRelease = false;
     env = 'preview';
     runSequence(
         ['del'], ['copy:img'], ['sprite'], ['scss2css'], ['webpack'],
@@ -150,20 +151,19 @@ gulp.task('preview', function() {
         });
 });
 
-gulp.task('cdn', function() {
-    isDev = false;
-    isRelease = false;
+gulp.task('cdn', function(cb) {
     env = 'production';
     runSequence(
         ['del'], ['copy:img'], ['sprite'], ['scss2css'], ['webpack'], ['rev:img'], ['replace:img-hash'], ['rev:css-js'], ['replace:css-js-hash'], ['ftp'],
-        function() {});
+        function() {
+            cb();
+        });
 });
 
 gulp.task('release', function() {
-    isDev = false;
-    isRelease = true;
-    env = 'production';
     runSequence(
         ['cdn'],
-        function() {});
+        function() {
+            runServer();
+        });
 });
