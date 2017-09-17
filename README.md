@@ -4,7 +4,7 @@ README
 
 #### 用法：
 ```
-1. git clone https://github.com/manble/webapp-scaffold.git
+1. git clone https://github.com/manble/webapp-scaffold.git webapp
 2. cd webapp
 3. yarn install
 4. gulp dev (gulp dev --prod)
@@ -36,6 +36,7 @@ sh release.sh(sh release.sh test)创建当前日期(或参数test)目录的webap
 ```
 image: (/images目录绝对路径)
     <img src="/images/example.png" alt="">
+    <img src="/images/base64/qq.png" alt="">
     background-image: url('/images/example.png');
 
 ejs: 绝对路径
@@ -71,7 +72,7 @@ module.exports = {
 
 #### 目录结构
 ```
-public/
+public/ 
     images/
         base64
             qq.png ==> data:image/png;base64,balabalaxxxxxxx
@@ -113,9 +114,10 @@ views/
         error/
             404.ejs
             500.ejs
-    partials/
+    layout/
         layout.ejs
-
+models/
+utils/
 dependencies/ 
     conf.js //配置文件
 ```
