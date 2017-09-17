@@ -1,22 +1,61 @@
 README
 ===========================
-vue + scss + express + ejs + gulp + webpack + pm2 webapp scaffold
+(vue || react) + scss + express + ejs + gulp + webpack + pm2 webapp 脚手架
 
-####用法：
+#### 用法：
 ```
 1. git clone https://github.com/manble/webapp-scaffold.git
 2. cd webapp
-3. npm install
-4. gulp dev (gulp preview)
-5. http://127.0.0.1:8080
+3. yarn install
+4. gulp dev (gulp dev --prod)
+5. http://127.0.0.1:8181
 ```
 
-####配置：
+#### gulp三模式
+```
+gulp dev 开发模式
+启动本地服务，监听scss js image变化自动刷新浏览器
+
+gulp preview
+上线前验证
+
+gulp production
+css js image上传cdn，并替换本地路径为cdn版本号文件路径
+```
+
+#### 启动web前端服务
+```
+1. ssh manble@127.0.0.1 -p 12345
+2. cd /app
+3. sh release.sh
+启动服务
+sh release.sh(sh release.sh test)创建当前日期(或参数test)目录的webapp服务。
+```
+
+#### 文件路径说明
+```
+image: (/images目录绝对路径)
+    <img src="/images/example.png" alt="">
+    background-image: url('/images/example.png');
+
+ejs: 绝对路径
+    <% layout('/layouts/layout.ejs') -%>
+    <% block('page_css', '/styles/page/index.css') -%>
+    <% block('page_js', '/scripts/page/index.js') -%>
+
+scss：(scss/目录下路径)
+    @import "includes/sprites/icon.scss";
+
+js:(scripts/目录下路径)
+    import request from 'utils/request';
+    import 'includes/pages/index/basic.scss'; 
+
+```
+
+#### 配置：
 ```
 webapp/dependencies/conf.js
 module.exports = {
-    domain: 'http://example.com',
-    testDomain: 'http://127.0.0.1:8080',
     cdn: 'http://127.0.0.1:8080/webapp', //前端静态资源上传cdn，替换本地相对路径
     ftp: {
         connect: {
@@ -30,41 +69,18 @@ module.exports = {
 }
 ```
 
-#### gulp三模式
-```
-gulp dev 开发模式
-启动本地服务，监听scss js image变化自动刷新浏览器
-
-gulp preview 压缩模式
-压缩css js， 重启本地服务，上线前验证
-
-gulp release 静态资源上传cdn
-css js image上传cdn，并替换本地路径为cdn代hash值的路径
-```
-
-####启动远程服务器web前端服务
-```
-1. ssh manble@127.0.0.1 -p 12345
-2. git clone https://example.com/manble/webapp.git webapp
-3. cd webapp
-4. npm install
-5. cd ..
-6. rz release.sh
-
-启动服务
-sh release.sh(sh release.sh test)创建当前日期(或参数test)目录的webapp服务。
-```
-
-####目录结构
+#### 目录结构
 ```
 public/
     images/
-        sprites/ 存放将合并sprite的小icon
+        base64
+            qq.png ==> data:image/png;base64,balabalaxxxxxxx
+        sprites/
             icon/
-                test/
-                    qq.png ==> .icon-test-qq {}
                 qq.png ==> .icon-qq{}
                 qq-hover.png ==> .icon-qq:hover{}
+                test/
+                    qq.png ==> .icon-test-qq {}
     scss/
         includes/
             sprites/ 合并icon后自动生成
@@ -81,12 +97,7 @@ public/
         libs/
         pages/ 页面文件入口
             index.js
-            common.js
-        tasks/ 任务列表
-            pages/
-                index/
-                    index.js
-            taskManager.js
+        models/
         utils/
             observer.js
             dateTool.js

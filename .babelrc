@@ -1,0 +1,13 @@
+{
+  "presets": [
+    [
+      "es2015",
+      {
+        "modules": false
+      }
+    ],
+    "react",
+    "babel-preset-stage-0"
+  ],
+  "plugins": ["transform-runtime"]
+}
