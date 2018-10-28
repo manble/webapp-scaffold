@@ -1,0 +1,16 @@
+{
+    "mocks": [
+        {
+            "state": "on",
+            "method": "get",
+            "path": "/search/repositories",
+            "response": "/mocks/example.js"
+        },
+        {
+            "state": "on",
+            "method": "post",
+            "path": "/api/example",
+            "response": "/mocks/example.js"
+        }
+    ]
+}

@@ -1,70 +1,82 @@
 /**
-* @description：配置文件
-* @author: manble@live.com
-*/
+ * @description：配置文件
+ * @author: manble@live.com
+ */
 'use strict';
 module.exports = {
-    cdn: 'http://127.0.0.1:8080/webapp', //前端静态资源上传cdn，替换本地相对路径
+    cdn: 'http://127.0.0.1:7777/webapp', //前端静态资源上传cdn，替换本地相对路径
     ftp: {
         connect: {
-            host: "127.0.0.1",
+            host: '127.0.0.1',
             port: 21,
-            user: "manble",
-            password: "123456"
+            user: 'manble',
+            password: '123456'
         },
         localDir: './build/',
         remoteDir: '/webapp/' // 上传静态资源目标目录(ftp://127.0.0.1:21/webapp/)
     },
-    dist: './public/dist/',
-    del: ['./build', './public/dist/**', './public/scss/includes/sprites/**', './views/release/', './rev-manifest.json'],
+    dist: './dist/',
+    del: ['./build', './dist/**', './public/scss/includes/sprites/**', './views/release/', './rev-manifest.json'],
     sprite: {
         src: './public/images/sprites/',
-        imgName: './public/dist/images/sprites/',
+        imgName: './dist/images/sprites/',
         cssName: './public/scss/includes/sprites/',
         cssTemplate: './dependencies/sprite.scss.template.handlebars',
         dist: './'
     },
     watch: {
-        copyImg: ['./public/images/**/*'],
         sprite: ['./public/images/sprites/**/*'],
         scss2css: ['./public/scss/**/*.scss'],
-        webpackjs: ['./public/scripts/**/*'],
-        restart: ['./app.js', './routes/**/*.js', './models/*', './utils/**/*.js'],
-        notify: ['./views/**/*.ejs','./public/images/**/*','./public/dist/styles/**/*.css','./public/dist/**/*.js']
+        webpack: ['./public/scripts/**/*'],
+        restart: ['./app.js', './app-config.js', './routes/**/*.js', './models/*', './utils/**/*.js', './mocks/**/*'],
+        notify: ['./views/**/*.ejs', './public/images/**/*', './dist/styles/**/*.css', './dist/**/*.js']
     },
-    webpackjs: {
+    webpack: {
+        entry: {
+            // common: ['vue', 'vue-router', 'vuex', 'whatwg-fetch']
+            common: ['react', 'react-dom', 'redux', 'react-redux', 'react-router-dom', 'react-router-config', 'whatwg-fetch', 'react-addons-transition-group']
+        },
+        commonManifest: './dist/scripts/pages/common-manifest.json',
         src: './public/scripts/pages/',
+        dist: './dist/scripts/pages/',
+        public: '',
         regexp: /\/public\/scripts\/pages\/(.*)\.js$/
     },
-    copyImg: {
-        src: ['./public/images/**/*.png', '!./public/images/sprites/**/*.png'],
-        dist: './public/dist/images'
+    img2base64: {
+        cssjs: {
+            src: ['./dist/**/*', '!./dist/images/**/*'],
+            dist: './dist/'
+        },
+        ejs: {
+            src: ['./views/release/**/*'],
+            dist: './views/release/'
+        }
     },
     scss2css: {
-        src: ['./public/scss/**/*.scss', '!./public/scss/**/includes/**/*.scss'],
+        src: ['./public/scss/**/*.scss', '!./public/scss/includes/**/*.scss'],
         includePaths: ['./public/scss/', './public/scss/includes', './public/scripts/'],
-        dist: './public/dist/styles'
+        dist: './dist/styles'
     },
-    revImg: {
-        src: ['./public/dist/images/**/*'],
-        base: './public/dist/',
+    revAssets: {
+        src: ['./public/**/*', './dist/images/**/*', '!./public/scss/**/*', '!./public/scripts/**/*', '!./public/images/sprites/**/*', '!./public/images/base64/**/*'],
+        base: './dist/',
         build: './build/',
-        dist: './'
+        dist: './dist/'
     },
-    revCssJs: {
-        src: ['./public/dist/**', '!./public/dist/images', '!/public/dist/scripts/**/*.js.map'],
-        base: './public/dist/',
+    revCssjs: {
+        src: ['./dist/**', '!./dist/images', '!./dist/scripts/**/*.js.map', '!./dist/rev-manifest.json'],
+        base: './dist/',
         build: './build/',
-        dist: './'
-    },
-    replaceImgHash: {
-        src: ['./public/dist/**/*.css', './public/dist/**/*.js'],
-        manifest: './rev-manifest.json',
-        dist: './public/dist/'
+        dist: './dist/'
     },
     replaceCssJsHash: {
+        src: ['./dist/**/*.css', './dist/**/*.js'],
+        manifest: './dist/rev-manifest.json',
+        dist: './dist/'
+    },
+    replaceEjsHash: {
         src: ['./views/**/*', '!./views/release/'],
-        manifest: './rev-manifest.json',
+        manifest: './dist/rev-manifest.json',
         dist: './views/release/',
         replaceInExtensions: ['.js', '.css', '.html', '.hbs', '.ejs']
     }

@@ -4,15 +4,18 @@
  */
 'use strict';
 const api = require('./api/api');
+const mock = require('./mock/mock');
 const index = require('./pages/index');
+
+
 
 module.exports = (app) => {
     if (/development/.test(app.get('env'))) {
         app.use('/api', api);
+        app.use(require('../app-config')('development').mockPrefix, mock);
     }
     app.use('/', index);
-
-
+    // app.use('/*', index);
 
     app.use((req, res, next) => {
         res.status(404).render('pages/error/404');

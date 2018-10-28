@@ -4,20 +4,19 @@
 */
 'use strict';
 const path = require('path');
-const fs = require('fs');
 const Ftp = require('ftp');
 const ftp = new Ftp();
 
 const utils = require('../utils/utils');
-module.exports = function(config, cb) {
+module.exports = function (config, cb) {
     let uploadList = [];
     let uploadDirectory = path.resolve(process.cwd(), config.localDir);
-    let push = function() {
+    let push = function () {
         if (uploadList.length) {
             console.log('------ ' + uploadList.length + ' files need to upload  ----------------');
-            uploadList.map(function(item, idx, arr) {
-                mkdir(path.dirname(item.remotePath), function() {
-                    ftp.put(item.path, item.remotePath, function(err) {
+            uploadList.map(function (item, idx, arr) {
+                mkdir(path.dirname(item.remotePath), function () {
+                    ftp.put(item.path, item.remotePath, function (err) {
                         err ? console.log('------error: ' + err) : console.log('------ uploaded: ' + item.remotePath);
                         end(idx, arr.length);
                     });
@@ -29,15 +28,15 @@ module.exports = function(config, cb) {
         };
     };
 
-    let upload = function() {
+    let upload = function () {
         let files = [];
-        utils.getFiles(uploadDirectory, function(_path) {
+        utils.getFiles(uploadDirectory, function (_path) {
             !/(html\/pages\/|images\/base64|.map$)/.test(_path) && files.push(utils.slash(_path));
         });
 
-        files.forEach(function(_path, idx) {
+        files.forEach(function (_path, idx) {
             let remotePath = _path.replace(utils.slash(uploadDirectory) + '/', '');
-            ftp.list(remotePath, function(err, file) {
+            ftp.list(remotePath, function (err, file) {
                 err && uploadList.push({
                     path: _path,
                     remotePath: remotePath
@@ -47,7 +46,7 @@ module.exports = function(config, cb) {
         });
     };
 
-    let end = function(idx, len) {
+    let end = function (idx, len) {
         if (idx >= len - 1) {
             console.log('------ upload done ---------------------------');
             ftp.end();
@@ -55,15 +54,15 @@ module.exports = function(config, cb) {
         }
     };
 
-    let mkdir = function(_path, callback) {
+    let mkdir = function (_path, callback) {
         ftp.mkdir(_path, true, callback);
     };
 
-    let ready = function() {
+    let ready = function () {
         console.log('------ upload ready --------------------------');
-        ftp.cwd(config.remoteDir, function(err) {
-            err ? mkdir(config.remoteDir, function() {
-                ftp.cwd(config.remoteDir, function(err) {
+        ftp.cwd(config.remoteDir, function (err) {
+            err ? mkdir(config.remoteDir, function () {
+                ftp.cwd(config.remoteDir, function (err) {
                     upload();
                 });
             }) : upload();

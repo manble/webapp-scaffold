@@ -9,15 +9,27 @@ const myHeaders = new Headers({
 });
 
 const request = function (input, init) {
+    const originRegs = [new RegExp(`^https?:\/\/${location.host}`)];
     return fetch(input, Object.assign({
         method: 'GET',
         headers: myHeaders,
-        mode: 'cros',
-        credentials: 'include'
+        mode: 'cors',
+        credentials: originRegs.some(reg => reg.test(input)) ? 'include' : 'omit'
     }, init));
 };
 
-const uri = (uri) => (!/https?:\/\//.test(uri) ? `${window.CONFIG.origin}${uri}` : uri);
+const uri = uri => !/^(?:https?:)?\/\//.test(uri) ? (() => {
+   let appConfig = process.env.CONFIG;
+    if (appConfig.mode === 0) {
+        if (/ismock=1/i.test(location.search)) {
+            return `/mock${uri}`;
+        }
+        if (appConfig.origin.client === '') {
+            return appConfig.apiProxyPrefix + uri;
+        }
+    }
+    return appConfig.origin.client + uri;
+})() : uri;
 
 export default {
     get: async function (input, data = '', options = {

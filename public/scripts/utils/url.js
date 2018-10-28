@@ -23,7 +23,7 @@ const Url = {
       let arr = [];
       if (Object.prototype.toString.call(data) == "[object Object]") {
          Object.keys(data).map((key) => {
-            arr.push(`${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
+            arr.push(`${encodeURIComponent(key)}=${data[key]}`);
          });
          return flag ? `?${arr.join('&')}` : arr.join('&');
       } else {

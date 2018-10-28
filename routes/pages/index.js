@@ -12,10 +12,7 @@ Router.get('/', (req, res, next)=> {
     Promise.all([
         // index.newsList(req)
     ]).then((data) => {
-        res.render('pages/index', {
-            page: 'index',
-            // newsList: data[0].news
-        });
+        res.render('pages/index', {});
     }).catch((err) => {
         next(err)
     });

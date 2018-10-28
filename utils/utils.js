@@ -10,7 +10,7 @@ const slash = require('slash');
 const crypto = require('crypto');
 
 const getFiles = (dir, cb) => {
-    let isDir = (dir) => (fs.statSync(dir).isDirectory());
+    let isDir = dir => (fs.statSync(dir).isDirectory());
     dir = slash(dir);
     if (isDir(dir)) {
         let files = fs.readdirSync(dir);
@@ -37,12 +37,7 @@ module.exports = {
     crypto: (txt = '') => {
         return crypto.createHash('md5').update(new Buffer(txt)).digest('hex');
     },
-    slash: function (str) {
-        if (/^\\\\\?\\/.test(str) || /[^\x00-\x80]+/.test(str)) {
-            return str;
-        }
-        return str.replace(/\\/g, '/');
-    },
+    slash,
     mkdir: function (dir, callback) {
         let mkdir = function (p, opts, made) {
             if (!opts || typeof opts !== 'object') {
@@ -52,7 +47,9 @@ module.exports = {
                     }
                 };
             }
-            if (!made) made = null;
+            if (!made) {
+               made = null;
+            }
             p = path.resolve(p);
             try {
                 fs.mkdirSync(p, opts.mode);
@@ -79,12 +76,12 @@ module.exports = {
         mkdir(path.dirname(dir), callback);
     },
 
-    writeFile: function (filePath, content, callback) {
-        this.mkdir(filePath, function (err) {
-            if (err) {
-                return callback(err)
-            }
-        });
+    writeFile: function (filePath, content, callback = () => { }) {
+        this.mkdir(filePath);
         fs.writeFile(filePath, content, callback);
+    },
+    writeFileSync: function (filePath, content) {
+        this.mkdir(filePath);
+        fs.writeFileSync(filePath, content);
     }
 };

@@ -18,10 +18,12 @@ app.engine('ejs', engine);
 app.set('views', __dirname + '/views' + (/production|preview-cdn/.test(process.env.NODE_ENV) ? '/release' : ''));
 app.set('view engine', 'ejs');
 
-app.use(express.static(__dirname + '/public/dist'));
+app.use(express.static(__dirname + '/build'));
+app.use(express.static(__dirname + '/dist'));
+app.use(express.static(__dirname + '/public'));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 app.use(cookieParser());

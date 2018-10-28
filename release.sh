@@ -28,7 +28,7 @@ fi
 
 cd $floder
 export NODE_ENV=production
-yarn install
+npm install
 gulp production
 pm2 delete webapp
 pm2 start pm2-config.json

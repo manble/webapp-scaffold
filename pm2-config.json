@@ -1,18 +1,18 @@
 {
-    "apps": [
-        {
-            "name": "webapp",
-            "script": "app.js",
-            "exec_mode": "cluster",
-            "instances": 4,
-            "max_memory_restart": "1G",
-            "autorestart": true,
-            "env": {
-                "NODE_ENV": "production"
-            },
-            "log_date_format": "YYYY-MM-DD HH:mm Z",
-            "error_file": "logs/webapp-error.log",
-            "out_file": "logs/webapp-out.log"
-        }
-    ]
+   "apps": [
+       {
+           "name": "webapp",
+           "script": "app.js",
+           "exec_mode": "cluster",
+           "instances": 4,
+           "max_memory_restart": "1G",
+           "autorestart": true,
+           "env": {
+               "NODE_ENV": "production"
+           },
+           "log_date_format": "YYYY-MM-DD HH:mm Z",
+           "error_file": "logs/pm2-error.log",
+           "out_file": "logs/pm2-out.log"
+       }
+   ]
 }

@@ -3,8 +3,8 @@ npm-debug.log
 .idea
 .DS_Store
 .history
-build
-public/dist
+build/
+dist/
 public/scss/includes/sprites/
 views/release
 logs/

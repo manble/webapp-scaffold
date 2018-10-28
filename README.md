@@ -1,26 +1,77 @@
 README
 ===========================
-(vue || react) + scss + express + ejs + gulp + webpack + pm2 webapp 脚手架
+#### 简介
+webapp模版，简单的，可直接部署到远端服务的node服务脚手架，采用(vue || react) + scss + express + ejs + gulp + webpack + pm2 webapp。
+
+1. 支持自动打开默认浏览器。
+2. 可以监听文件变化自动构建并实时更新浏览器。
+3. 支持图标base64和sprite两种格式。
+4. 支持px转rem。
+5. 支持自动上传静态资源到cdn。
+6. 支持本地数据接口mock。
+7. 支持eslint开启和关闭。
+8. 支持生成html文件。
+
 
 #### 用法：
 ```
 1. git clone https://github.com/manble/webapp-scaffold.git webapp
 2. cd webapp
-3. yarn install
-4. gulp dev (gulp dev --prod)
+3. npm install
+4. gulp dev
 5. http://127.0.0.1:8181
 ```
 
 #### gulp三模式
 ```
 gulp dev 开发模式
+gulp dev --open
+gulp dev --open=dev.example.com
+gulp dev --minify
+gulp dev --eslint=off 关闭时时eslint检测
 启动本地服务，监听scss js image变化自动刷新浏览器
 
 gulp preview
 上线前验证
 
-gulp production
+gulp production --ftp
 css js image上传cdn，并替换本地路径为cdn版本号文件路径
+
+gulp production --ftp --ejs2html
+css js image上传cdn，替换本地路径为cdn版本号文件路径, 同时生成html文件
+```
+
+#### development模式下数据接口mock
+```
+1. 在mocks/ 目录下配置 [name].mock.json文件，详情如下:
+{
+    "mocks": [
+        {
+            "state": "on",
+            "method": "get",
+            "path": "/search/repositories",
+            "response": "/mocks/example.js"
+        },
+        {
+            "state": "off",
+            "method": "post",
+            "path": "/api/example",
+            "response": "/mocks/example.js"
+        }
+    ]
+}
+2. 配置相应的js文件，并通过mockjs生成相应的数据。
+3. 通过 ismock=1参数启用，http://127.0.0.1:8181?ismock=1。
+4. 当mock.json文件中的state为on，且path命中的时候，本地数据模块数据生效。
+
+```
+#### app-config.js
+```
+1. px2rem  开启关闭px转rem。
+2. origin。
+    1). client，浏览器端数据请求域。
+    2). server，node端数据请求域。
+
 ```
 
 #### 启动web前端服务
@@ -118,6 +169,7 @@ views/
         layout.ejs
 models/
 utils/
+mocks/ 
 dependencies/ 
     conf.js //配置文件
 ```

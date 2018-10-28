@@ -87,7 +87,7 @@ module.exports = {
       return _request(config, req);
    },
 
-   del: function(config, req) {
+   delete: function(config, req) {
       config.method = 'DELETE';
       return _request(config, req);
    },
